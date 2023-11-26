@@ -25,8 +25,37 @@ class DBQueries:
         file = 'expences1.csv'
         data = self.get_data(file)
         data.to_sql('expense', self.conn, index=False, if_exists='replace')
-    
+
+    def create_table(self):
+        with sql3.connect('expense_tracker.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("""CREATE TABLE IF NOT EXISTS users 
+                           (email varchar(40),
+                           password varchar(40), 
+                           firstname varchar(40), 
+                           lastname varchar(40));""")
+            
+    def add_items(self):
+        with sql3.connect('expense_tracker.db') as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""CREATE TABLE items_list(
+                               Id INTEGER PRIMARY KEY NOT NULL,
+                               date DATE NOT NULL,
+                               amount DECIMAL(10, 2),
+                               details VARCHAR(255),
+                               email varchar(40));
+                           """)
+            
+            conn.commit()
+
+    def drop_table(self):
+        with sql3.connect('expense_tracker.db') as conn:
+            cursor = conn.cursor()
+            cursor.execute("drop table items_list")
+            conn.commit()
+
 if __name__ == '__main__':
     data_obj = DBQueries()
-    data_obj.run()
+    data_obj.add_items()
 
