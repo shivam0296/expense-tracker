@@ -102,11 +102,30 @@ def get_items_email():
     
     return jsonify(resp)
 
+@app.route('/deleteitems', methods=['POST'])
+def delete_items():
+    if request.method == 'POST':
+        id = request.json['delid']
+    
+    with sql3.connect('expense_tracker.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute(f"delete from items_list where id = {id};")
+        conn.commit()
+    return jsonify("Deleted Successfully!")
 
-
-
-
-
+@app.route('/update', methods=['POST'])
+def update_items():
+    if request.method == 'POST':
+        id = request.json['uid']
+        amount = request.json['uamount']
+        details = request.json['udetails']
+        
+    with sql3.connect('expense_tracker.db') as conn:
+        cursor = conn.cursor()
+        cursor.execute("update items_list set amount = ?, details = ?  where id = ?;",(amount, details, id))
+        conn.commit()
+    return jsonify("Deleted Successfully!")
+    
 
 
 if __name__ == '__main__':
